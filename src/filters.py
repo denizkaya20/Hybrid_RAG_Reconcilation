@@ -8,27 +8,13 @@ from __future__ import annotations
 
 
 def _normalize_txn_name(name: str) -> str:
-    return (name or "").strip().lower()
+    return (str(name) if name else "").strip().lower()
 
 
 def should_exclude_transaction(txn_name: str, excluded_names: list[str]) -> bool:
-    """
-    Return ``True`` when *txn_name* is in the exclusion list.
-
-    Comparison is case-insensitive and strips surrounding whitespace.
-
-    Args:
-        txn_name: Raw transaction name from the bank statement.
-        excluded_names: List of names to filter out (e.g. ``"Virement"``).
-
-    Returns:
-        ``True`` if the transaction should be excluded, ``False`` otherwise.
-    """
-    if not txn_name:
+    if not txn_name or (isinstance(txn_name, float)):
         return False
-    normalised = _normalize_txn_name(txn_name)
-    excluded_set = {_normalize_txn_name(n) for n in excluded_names}
-    return normalised in excluded_set
+    return _normalize_txn_name(str(txn_name)) in {_normalize_txn_name(n) for n in excluded_names}
 
 
 # Legacy alias
