@@ -193,3 +193,8 @@ Automated header/column detection.
 Multi-LLM support.
 
 4-stage hybrid matching pipeline.
+
+
+## 🔒 Data Privacy
+
+All personal data in the sample datasets has been fully anonymised. No real names, TC identity numbers, tax registration numbers, or bank account details are present in any file shared in this repository.
