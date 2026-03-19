@@ -1,4 +1,13 @@
-Certainly! Here is the English translation of your documentation, maintaining the professional tone and technical structure.
+---
+title: Hybrid RAG Reconciliation
+emoji: 🏦
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: 4.36.0
+app_file: app.py
+pinned: false
+---
 
 🏦 IPARD II - LLM & RAG Hybrid Matching System
 An intelligent reconciliation system that automatically matches bank transactions with applicants.
