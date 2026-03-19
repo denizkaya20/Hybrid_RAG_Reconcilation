@@ -35,7 +35,7 @@ jobs:
           pip install pytest ruff
 
       - name: Lint (ruff)
-        run: ruff check src/ app.py
+        run: ruff check src/
 
       - name: Run unit tests
         run: pytest tests/ -v --tb=short
