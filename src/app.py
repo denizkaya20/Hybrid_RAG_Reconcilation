@@ -27,9 +27,8 @@ import pandas as pd  # noqa: E402
 
 from config import (  # noqa: E402
     DEEPSEEK_BASE_URL,
+    DEEPSEEK_API_KEY,
     DEEPSEEK_MODEL,
-    GROQ_BASE_URL,
-    GROQ_API_KEY,
     ModelSpec,
 )
 from io_applicants import read_applicants  # noqa: E402
@@ -44,7 +43,6 @@ from config import FILTERED_TRANSACTION_NAMES  # noqa: E402
 
 _PROVIDERS = {
     "DeepSeek": {"base_url": DEEPSEEK_BASE_URL, "default_model": DEEPSEEK_MODEL},
-    "Groq": {"base_url": GROQ_BASE_URL, "default_model": "deepseek-r1-distill-llama-70b"},
 }
 
 _DECISION_COLORS = {
@@ -250,19 +248,19 @@ Upload both Excel files, configure settings, and click **Run Reconciliation**.
                 gr.Markdown("### 🤖 LLM Provider (Phase 4)")
                 provider_dropdown = gr.Dropdown(
                     choices=list(_PROVIDERS.keys()),
-                    value="Groq",
+                    value="DeepSeek",
                     label="Provider",
                 )
                 api_key_input = gr.Textbox(
                     label="API Key",
                     type="password",
-                    placeholder="gsk_…",
-                    value=GROQ_API_KEY,
+                    placeholder="sk-…",
+                    value=DEEPSEEK_API_KEY,
                 )
                 model_input = gr.Textbox(
                     label="Model name",
-                    value="deepseek-r1-distill-llama-70b",
-                    placeholder="deepseek-r1-distill-llama-70b",
+                    value=DEEPSEEK_MODEL,
+                    placeholder="deepseek-chat",
                 )
 
                 def _on_provider_change(provider: str) -> str:
