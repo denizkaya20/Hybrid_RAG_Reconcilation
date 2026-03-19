@@ -18,7 +18,6 @@ from __future__ import annotations
 import sys
 import tempfile
 from pathlib import Path
-from typing import Optional
 
 import gradio as gr
 import pandas as pd
@@ -28,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 from config import (
     DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY, DEEPSEEK_MODEL,
-    GROQ_BASE_URL, GROQ_API_KEY, QWEN_MODEL,
+    GROQ_BASE_URL, QWEN_MODEL,
     ModelSpec,
 )
 from io_applicants import read_applicants
