@@ -116,19 +116,15 @@ def normalize_upper(text: str) -> str:
 
 
 def normalize_application_number(value: object) -> str:
-    """
-    Normalize application number variants.
-
-    Keeps digits and hyphens only; unifies separators.
-    Example: ``"TR-2023/00123"`` → ``"2023-00123"``
-    """
     s = normalize_text(value)
     if not s:
         return ""
     s = s.replace("/", "-")
     s = re.sub(r"[^0-9\-]", "", s)
     s = re.sub(r"-{2,}", "-", s)
+    s = s.strip("-")  # ← BU SATIRI EKLE
     return s
+
 
 
 # ===========================================================================
