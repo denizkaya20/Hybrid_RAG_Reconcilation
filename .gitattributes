@@ -1,2 +1,4 @@
 *.xlsx filter=lfs diff=lfs merge=lfs -text
 *.xls filter=lfs diff=lfs merge=lfs -text
+datasets/*.xls filter=lfs diff=lfs merge=lfs -text
+datasets/*.xlsx filter=lfs diff=lfs merge=lfs -text
