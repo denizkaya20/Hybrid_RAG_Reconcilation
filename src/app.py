@@ -19,33 +19,25 @@ import sys
 import tempfile
 from pathlib import Path
 
-import gradio as gr
-import pandas as pd
+# Must be before local imports
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+import gradio as gr  # noqa: E402
+import pandas as pd  # noqa: E402
 
-from src.app import build_ui
-
-ui = build_ui()
-ui.launch(server_name="0.0.0.0", server_port=7860)
-
-
-
-# Ensure src/ is importable when running from project root
-sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
-
-from config import (
-    DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY, DEEPSEEK_MODEL,
-    GROQ_BASE_URL, QWEN_MODEL,
+from config import (  # noqa: E402
+    DEEPSEEK_BASE_URL,
+    DEEPSEEK_API_KEY,
+    DEEPSEEK_MODEL,
+    GROQ_BASE_URL,
+    GROQ_API_KEY,
     ModelSpec,
 )
-from io_applicants import read_applicants
-from io_ipard2 import read_statement
-from runner import run_reconciliation
-from excel_out import write_excel
-from config import FILTERED_TRANSACTION_NAMES
-
+from io_applicants import read_applicants  # noqa: E402
+from io_ipard2 import read_statement  # noqa: E402
+from runner import run_reconciliation  # noqa: E402
+from excel_out import write_excel  # noqa: E402
+from config import FILTERED_TRANSACTION_NAMES  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -53,7 +45,7 @@ from config import FILTERED_TRANSACTION_NAMES
 
 _PROVIDERS = {
     "DeepSeek": {"base_url": DEEPSEEK_BASE_URL, "default_model": DEEPSEEK_MODEL},
-    "Groq (Qwen)": {"base_url": GROQ_BASE_URL, "default_model": QWEN_MODEL},
+    "Groq": {"base_url": GROQ_BASE_URL, "default_model": "deepseek-r1-distill-llama-70b"},
 }
 
 _DECISION_COLORS = {
@@ -82,28 +74,23 @@ def run_reconciliation_ui(
     model_name: str,
     progress=gr.Progress(track_tqdm=True),
 ):
-    """
-    Main Gradio handler. Runs the full pipeline and returns UI-ready outputs.
-    """
+    """Main Gradio handler. Runs the full pipeline and returns UI-ready outputs."""
     logs: list[str] = []
 
-    def log(msg: str) -> str:
+    def log(msg: str) -> None:
         logs.append(msg)
-        return "\n".join(logs)
 
-    # ---- Validate inputs ----
     if applicants_file is None:
-        return "❌ Please upload the Applicants Excel file.", None, None, None, None
+        return "❌ Please upload the Applicants Excel file.", None, None, None
 
     if ipard2_file is None:
-        return "❌ Please upload the bank statement Excel file.", None, None, None, None
+        return "❌ Please upload the bank statement Excel file.", None, None, None
 
     if not api_key.strip():
-        return "❌ API key is required.", None, None, None, None
+        return "❌ API key is required.", None, None, None
 
     progress(0, desc="Loading files …")
 
-    # ---- Load applicants ----
     try:
         log(f"📂 Loading applicants from sheet '{applicants_sheet}' rows {start_row}–{end_row} …")
         applicants = read_applicants(
@@ -114,9 +101,8 @@ def run_reconciliation_ui(
         )
         log(f"  ✅ {len(applicants)} applicants loaded.")
     except Exception as exc:
-        return f"❌ Failed to load applicants: {exc}", None, None, None, None
+        return f"❌ Failed to load applicants: {exc}", None, None, None
 
-    # ---- Load transactions ----
     try:
         log(f"📂 Loading co-financing sheet '{co_financing_sheet}' …")
         co_financing_txns = read_statement(
@@ -136,12 +122,11 @@ def run_reconciliation_ui(
         )
         log(f"  ✅ {len(transfer_txns)} transfer transactions.")
     except Exception as exc:
-        return f"❌ Failed to load transactions: {exc}", None, None, None, None
+        return f"❌ Failed to load transactions: {exc}", None, None, None
 
     all_transactions = co_financing_txns + transfer_txns
     log(f"📊 Total transactions: {len(all_transactions)}")
 
-    # ---- Build model spec ----
     provider_cfg = _PROVIDERS.get(provider_name, list(_PROVIDERS.values())[0])
     model_spec = ModelSpec(
         name=provider_name.lower().replace(" ", "_"),
@@ -150,12 +135,10 @@ def run_reconciliation_ui(
         model=model_name.strip() or provider_cfg["default_model"],
     )
 
-    # ---- Run pipeline ----
     progress(0.10, desc="Running Phase 1–3 (rule-based) …")
     log(f"\n🚀 Starting reconciliation with {model_spec.name} …")
 
     def progress_cb(msg: str, pct: int) -> None:
-        nonlocal logs
         logs.append(msg)
         progress(pct / 100, desc=msg)
 
@@ -167,12 +150,11 @@ def run_reconciliation_ui(
             progress_callback=progress_cb,
         )
     except Exception as exc:
-        return f"❌ Pipeline error: {exc}", None, None, None, None
+        return f"❌ Pipeline error: {exc}", None, None, None
 
     log("\n✅ Pipeline complete.")
     progress(0.96, desc="Writing report …")
 
-    # ---- Write Excel output ----
     out_dir = Path(tempfile.mkdtemp())
     out_path = out_dir / f"reconciliation_{model_spec.name}.xlsx"
     try:
@@ -188,7 +170,6 @@ def run_reconciliation_ui(
         log(f"⚠️  Could not write Excel: {exc}")
         out_path = None
 
-    # ---- Build display tables ----
     results_rows = []
     for app, dec in zip(applicants, decisions):
         if dec is None:
@@ -214,7 +195,6 @@ def run_reconciliation_ui(
 
     results_df = pd.DataFrame(results_rows)
 
-    # ---- Statistics ----
     counts = results_df["Decision"].str.extract(r"([A-Z_]+)")[0].value_counts()
     stats_rows = [{"Metric": k, "Count": v} for k, v in counts.items()]
     stats_rows += [
@@ -232,11 +212,7 @@ def run_reconciliation_ui(
 # ---------------------------------------------------------------------------
 
 def build_ui() -> gr.Blocks:
-    with gr.Blocks(
-        title="Reconciliation",
-        theme=gr.themes.Soft(primary_hue="blue"),
-    ) as demo:
-
+    with gr.Blocks(title="Reconciliation") as demo:
         gr.Markdown(
             """
 # 🏦 Bank Reconciliation
@@ -247,7 +223,6 @@ Upload both Excel files, configure settings, and click **Run Reconciliation**.
         )
 
         with gr.Row():
-            # ---- Left column: inputs ----
             with gr.Column(scale=1):
                 gr.Markdown("### 📁 Input Files")
                 applicants_file = gr.File(
@@ -270,29 +245,28 @@ Upload both Excel files, configure settings, and click **Run Reconciliation**.
                         label="Transfer sheet name", value="TRANSFER ACCOUNT"
                     )
                 with gr.Row():
-                    start_row = gr.Number(label="Applicants start row (1-based)", value=132, precision=0)
-                    end_row = gr.Number(label="Applicants end row (1-based)", value=168, precision=0)
+                    start_row = gr.Number(label="Start row (1-based)", value=132, precision=0)
+                    end_row = gr.Number(label="End row (1-based)", value=168, precision=0)
 
                 gr.Markdown("### 🤖 LLM Provider (Phase 4)")
                 provider_dropdown = gr.Dropdown(
                     choices=list(_PROVIDERS.keys()),
-                    value="DeepSeek",
+                    value="Groq",
                     label="Provider",
                 )
                 api_key_input = gr.Textbox(
                     label="API Key",
                     type="password",
-                    placeholder="sk-…",
-                    value=DEEPSEEK_API_KEY,
+                    placeholder="gsk_…",
+                    value=GROQ_API_KEY,
                 )
                 model_input = gr.Textbox(
-                    label="Model name (leave blank for provider default)",
-                    value=DEEPSEEK_MODEL,
-                    placeholder="deepseek-chat",
+                    label="Model name",
+                    value="deepseek-r1-distill-llama-70b",
+                    placeholder="deepseek-r1-distill-llama-70b",
                 )
 
-                # Update default model name when provider changes
-                def _on_provider_change(provider: str):
+                def _on_provider_change(provider: str) -> str:
                     return _PROVIDERS[provider]["default_model"]
 
                 provider_dropdown.change(
@@ -301,7 +275,6 @@ Upload both Excel files, configure settings, and click **Run Reconciliation**.
 
                 run_btn = gr.Button("▶ Run Reconciliation", variant="primary", size="lg")
 
-            # ---- Right column: outputs ----
             with gr.Column(scale=2):
                 gr.Markdown("### 📊 Results")
 
@@ -347,15 +320,6 @@ Upload both Excel files, configure settings, and click **Run Reconciliation**.
     return demo
 
 
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
 if __name__ == "__main__":
     ui = build_ui()
-    ui.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
-        share=False,
-        show_error=True,
-    )
+    ui.launch(server_name="0.0.0.0", server_port=7860, share=False, show_error=True)
