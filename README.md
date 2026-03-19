@@ -1,78 +1,79 @@
-# 🏦 IPARD II - LLM & RAG Hibrit Eşleştirme Sistemi
+Certainly! Here is the English translation of your documentation, maintaining the professional tone and technical structure.
 
-Banka işlemleri ile başvuru sahiplerini otomatik eşleştiren akıllı mutabakat sistemi.
+🏦 IPARD II - LLM & RAG Hybrid Matching System
+An intelligent reconciliation system that automatically matches bank transactions with applicants.
 
-## 📋 İçindekiler
+📋 Table of Contents
+Features
 
-- [Özellikler](#özellikler)
-- [Kurulum](#kurulum)
-- [Kullanım](#kullanım)
-- [Ayarlar](#ayarlar)
-- [Çıktılar](#çıktılar)
-- [Sorun Giderme](#sorun-giderme)
+Installation
 
----
+Usage
 
-## ✨ Özellikler
+Settings
 
-### 🤖 4 Aşamalı Akıllı Eşleştirme
+Outputs
 
-1. **Phase 1: TC/VKN Eşleştirme** (En Güvenilir)
-   - Kimlik numarası veya vergi numarası ile otomatik eşleştirme
-   - %99 güvenilirlik
+Troubleshooting
 
-2. **Phase 2: Başvuru No Eşleştirme** (Çok Güvenilir)
-   - Başvuru numarası ile otomatik eşleştirme
-   - %97 güvenilirlik
+✨ Features
+🤖 4-Stage Intelligent Matching
+Phase 1: TR ID / Tax ID Matching (Most Reliable)
 
-3. **Phase 3: Güvenli İsim/Şirket Eşleştirme** (Güvenilir)
-   - Token bazlı akıllı isim eşleştirme
-   - Nadir kelime analizi ile doğrulama
-   - %88-90 güvenilirlik
+Automatic matching via ID number or tax registration number.
 
-4. **Phase 4: LLM + RAG Eşleştirme** (Akıllı)
-   - Vektör tabanlı semantic search (RAG)
-   - LLM ile karar verme (DeepSeek, Qwen, GPT-OSS)
-   - Karmaşık durumlar için
+99% Reliability.
 
-### 🎯 Otomatik Özellikler
+Phase 2: Application No. Matching (Highly Reliable)
 
-- ✅ Excel header ve kolon pozisyonlarını **otomatik** bulur
-- ✅ Türkçe karakter normalizasyonu
-- ✅ İşlem filtresi (virement, faiz tahakkuk vb.)
-- ✅ 3 farklı LLM modeliyle karşılaştırmalı sonuç
-- ✅ Detaylı Excel raporları
+Automatic matching via unique application numbers.
 
----
+97% Reliability.
 
-## 🚀 Kurulum
+Phase 3: Secure Name/Company Matching (Reliable)
 
-### 1. Gereksinimler
+Token-based intelligent name matching.
 
-```bash
+Verification through rare word analysis.
+
+88-90% Reliability.
+
+Phase 4: LLM + RAG Matching (AI Powered)
+
+Vector-based semantic search (RAG).
+
+LLM-driven decision making (DeepSeek, Qwen, GPT-OSS).
+
+Designed for complex or ambiguous cases.
+
+🎯 Automated Features
+✅ Automatic detection of Excel headers and column positions.
+
+✅ Turkish character normalization.
+
+✅ Transaction filtering (virement, interest accruals, etc.).
+
+✅ Comparative results using 3 different LLM models.
+
+✅ Detailed Excel reporting.
+
+🚀 Installation
+1. Requirements
+Bash
 Python 3.8+
-```
-
-### 2. Sanal Ortam Oluşturma
-
-```bash
+2. Create Virtual Environment
+Bash
 cd C:\Users\deniz\Desktop\MUTABAKAT\Hybrid_Approach
 python -m venv myenv
 myenv\Scripts\activate
-```
-
-### 3. Kütüphaneleri Yükleme
-
-```bash
+3. Install Dependencies
+Bash
 pip install pandas openpyxl xlrd chromadb sentence-transformers requests python-dotenv
-```
+4. Configure API Keys
+Create (or edit) the .env file:
 
-### 4. API Anahtarlarını Ayarlama
-
-`.env` dosyasını oluşturun (veya düzenleyin):
-
-```dotenv
-# LLM API'ları
+Code snippet
+# LLM APIs
 DEEPSEEK_BASE_URL=https://api.deepseek.com/v1
 DEEPSEEK_API_KEY=your-deepseek-api-key
 DEEPSEEK_MODEL=deepseek-chat
@@ -83,310 +84,103 @@ GROQ_API_KEY=your-groq-api-key
 QWEN_MODEL=qwen/qwen3-32b
 GPTOSS_MODEL=openai/gpt-oss-20b
 
-# RAG ayarları
+# RAG Settings
 EMBED_MODEL=intfloat/multilingual-e5-base
 RAG_TOPK=12
-```
+⚠️ IMPORTANT: Never upload your API keys to GitHub!
 
-⚠️ **ÖNEMLİ:** API anahtarlarınızı asla GitHub'a yüklemeyin!
+📝 Usage
+1. Set File Paths
+Open src/config.py and edit the file paths at the very top:
 
----
-
-## 📝 Kullanım
-
-### 1. Dosya Yollarını Ayarlama
-
-`src/config.py` dosyasını açın ve **en üstteki** dosya yollarını düzenleyin:
-
-```python
+Python
 # =========================================================================
-# 📁 DOSYA YOLLARI - Buradan kolayca değiştirin!
+# 📁 FILE PATHS - Change them easily here!
 # =========================================================================
 
-APPLICANTS_XLS = r"C:\Users\deniz\Desktop\MUTABAKAT\6-HAZİRAN\IPARD II\6406 Borçlu Def.Borç Kayıt.Arası Mutabakat- HAZİRAN 2023-IPARD II..xls"
-IPARD2_XLS = r"C:\Users\deniz\Desktop\MUTABAKAT\6-HAZİRAN\IPARD II\IPARD2.xls"
+APPLICANTS_XLS = r"C:\Users\deniz\Desktop\MUTABAKAT\6-JUNE\IPARD II\6406_Debtor_Ledger_Reconciliation_JUNE_2023.xls"
+IPARD2_XLS = r"C:\Users\deniz\Desktop\MUTABAKAT\6-JUNE\IPARD II\IPARD2.xls"
 
 # =========================================================================
-```
+💡 Tip: To process a different month, just change these two lines (e.g., 6-JUNE → 7-JULY).
 
-💡 **İpucu:** Farklı ay için sadece bu 2 satırı değiştirin (örn: `6-HAZİRAN` → `7-TEMMUZ`)
+2. Set Applicant Row Range
+In the same src/config.py file:
 
-### 2. Başvuru Satır Aralığını Ayarlama
-
-Aynı `src/config.py` dosyasında:
-
-```python
-# Sheet ayarları
+Python
+# Sheet Settings
 APPLICANTS_SHEET = "6406"
-APPLICANTS_START_ROW = 81    # 👈 Başlangıç satırı
-APPLICANTS_END_ROW = 113      # 👈 Bitiş satırı
-```
+APPLICANTS_START_ROW = 81    # 👈 Start row
+APPLICANTS_END_ROW = 113      # 👈 End row
+📌 Note: Use the actual row numbers as seen in Excel (starting from 1).
 
-📌 **Not:** Excel'deki gerçek satır numaralarını kullanın (1'den başlar)
-
-### 3. Programı Çalıştırma
-
-```bash
+3. Run the Program
+Bash
 cd src
 python runner.py
-```
-
-### 4. İlerlemeyi İzleme
-
-Terminal'de şu şekilde loglar göreceksiniz:
-
-```
-✅ Applicants loaded: 33 | rows=81-113
-🔍 ES_FINANSMAN: Otomatik header ve kolonlar aranıyor...
-✅ ES_FINANSMAN: Header bulundu: satır 7
-✅ ES_FINANSMAN: 40 işlem
-✅ TRANSFER: 38 işlem
-✅ Total txns loaded: 78
-
-✅ [deepseek] Phase1 TC/VKN matches: 5
-✅ [deepseek] Phase2 BasvuruNo matches: 3
-✅ [deepseek] Phase3a Person safe matches: 1
-✅ [deepseek] Phase3b Company safe matches: 1
-✅ [deepseek] Phase4 LLM+RAG matches: 21
-✅ Excel written: C:\...\llm_rag_output_hybrid_deepseek.xlsx
-```
-
----
-
-## ⚙️ Ayarlar
-
-### 📂 Dosya Yapısı
-
-```
+⚙️ Settings
+📂 File Structure
+Plaintext
 Hybrid_Approach/
 ├── src/
-│   ├── runner.py              # Ana program
-│   ├── config.py              # 👈 AYARLARIN HEPSİ BURADA
-│   ├── io_applicants.py       # Başvuru okuma
-│   ├── io_ipard2.py           # Banka ekstresi okuma
-│   ├── rule_candidates.py     # Kural tabanlı eşleştirme
-│   ├── rag_store.py           # Vektör veritabanı
-│   ├── llm_client.py          # LLM istemcisi
-│   ├── hybrid_matcher.py      # LLM karar verme
-│   ├── excel_out.py           # Excel çıktı
-│   ├── text_norm.py           # Metin normalizasyonu
-│   ├── token_stats.py         # Token istatistikleri
-│   └── filters.py             # İşlem filtreleri
-├── .env                       # 👈 API ANAHTARLARI BURADA
-├── indexes/                   # RAG vektör index'leri (otomatik)
-└── llm_rag_hybrid/           # 👈 ÇIKTI DOSYALARI BURADA
-    ├── llm_rag_output_hybrid_deepseek.xlsx
-    ├── llm_rag_output_hybrid_qwen_groq.xlsx
-    └── llm_rag_output_hybrid_gptoss_groq.xlsx
-```
+│   ├── runner.py          # Main entry point
+│   ├── config.py          # 👈 ALL SETTINGS ARE HERE
+│   ├── io_applicants.py   # Applicant reading logic
+│   ├── io_ipard2.py       # Bank statement reading logic
+│   ├── rule_candidates.py # Rule-based matching
+│   ├── rag_store.py       # Vector database
+│   ├── llm_client.py      # LLM API client
+│   ├── hybrid_matcher.py  # LLM decision logic
+│   ├── excel_out.py       # Excel output generation
+│   ├── text_norm.py       # Text normalization
+│   ├── token_stats.py     # Token statistics
+│   └── filters.py         # Transaction filters
+├── .env                   # 👈 API KEYS HERE
+├── indexes/               # RAG vector indices (auto-generated)
+└── llm_rag_hybrid/        # 👈 OUTPUT FILES HERE
+📊 Outputs
+📋 Excel Sheets
+Each output file contains 5 sheets:
 
-### 🎛️ config.py - Tüm Ayarlar
+MATCHED: Successfully matched records.
 
-```python
-# 📁 Dosya Yolları
-APPLICANTS_XLS = r"C:\path\to\applicants.xls"
-IPARD2_XLS = r"C:\path\to\ipard2.xls"
+REVIEW: Records requiring manual inspection (CONFLICT, NO_MATCH, or low confidence).
 
-# 📊 Sheet Ayarları
-APPLICANTS_SHEET = "6406"
-APPLICANTS_START_ROW = 81
-APPLICANTS_END_ROW = 113
+UNMATCHED_APPLICANTS: Applicants with no corresponding transaction.
 
-ES_SHEET = "EŞ-FİNANSMAN HESABI"
-TR_SHEET = "TRANSFER HESABI"
+UNMATCHED_TXNS: Transactions with no corresponding applicant.
 
-# 🚫 Filtrelenecek İşlemler
-FILTERED_TRANSACTION_NAMES = [
-    "Remittance Buying Foreign Currency",
-    "EFT to Account",
-    "Virement",
-    "Deposit Interest Accrual",
-    "Virement Cancel",
-]
+STATS: Summary statistics (Total counts, match rates, etc.).
 
-# 🤖 RAG Ayarları
-EMBED_MODEL = "intfloat/multilingual-e5-base"
-RAG_TOPK = 12  # Kaç aday işlem getirilecek
+🔧 Troubleshooting
+❌ "Header not found" Error
+Cause: The system cannot find the header row in the Excel file.
+Solution: Ensure the following columns exist exactly: TRANSACTION DATE, AMOUNT, NARRATIVE, TRANSACTION NAME.
 
-# 📤 Çıktı Ayarları
-OUTPUT_DIR = "llm_rag_hybrid"
-OUTPUT_PREFIX = "llm_rag_output_hybrid"
-```
+❌ API Error (429, 500, etc.)
+Cause: LLM API issues or rate limits.
+Solution: Check .env keys. llm_client.py includes automatic retries; if it persists, check your Groq/DeepSeek quota.
 
----
+❌ ChromaDB Error
+Cause: Corrupted vector database index.
+Solution: Delete the indexes/chroma_txns folder; the system will regenerate it on the next run.
 
-## 📊 Çıktılar
+🎓 How It Works
+Normalization: Converts Turkish characters (ş→s, ğ→g) and cleans whitespace.
 
-### 📁 Çıktı Konumu
+Rule-Based (Phases 1-3): Immediately matches high-confidence data like ID numbers or exact name tokens.
 
-```
-C:\Users\deniz\Desktop\MUTABAKAT\Hybrid_Approach\llm_rag_hybrid\
-```
+RAG (Retrieval-Augmented Generation): For remaining items, the system generates a query and retrieves the top 12 most similar transactions from the vector database.
 
-### 📋 Excel Dosyaları
+LLM Decision: The AI analyzes the candidate list and makes a final determination (MATCH/REVIEW/NO_MATCH) with a confidence score.
 
-Her model için ayrı Excel dosyası oluşturulur:
+🔄 Versioning
+v1.0 - January 2025
 
-- `llm_rag_output_hybrid_deepseek.xlsx`
-- `llm_rag_output_hybrid_qwen_groq.xlsx`
-- `llm_rag_output_hybrid_gptoss_groq.xlsx`
+First stable release.
 
-### 📑 Excel Sheet'leri
+Automated header/column detection.
 
-Her dosyada 5 sheet bulunur:
+Multi-LLM support.
 
-1. **MATCHED** 
-   - Başarıyla eşleşen tüm kayıtlar
-   - Kolonlar: model, name, tc_vkn, basvuru_no, decision, confidence, txn_id, amount, narrative, vb.
-
-2. **REVIEW**
-   - İnceleme gereken kayıtlar
-   - REVIEW, CONFLICT, NO_MATCH durumları
-
-3. **UNMATCHED_APPLICANTS**
-   - Hiçbir işlemle eşleşmeyen başvuru sahipleri
-
-4. **UNMATCHED_TXNS**
-   - Hiçbir başvuru sahibiyle eşleşmeyen işlemler
-   - (Opsiyonel: best_candidate_name ve score)
-
-5. **STATS**
-   - Özet istatistikler
-   - Toplam başvuru, eşleşme, review sayıları
-
-### 📈 İstatistik Örneği
-
-```
-applicants_total: 33
-matched_applicants: 31
-matched_rows: 31
-review_rows: 2
-unmatched_applicants: 0
-txns_total: 78
-used_txns_in_matches: 31
-unmatched_txns: 47
-```
-
----
-
-## 🔧 Sorun Giderme
-
-### ❌ "Header bulunamadı" Hatası
-
-**Sorun:** Excel dosyasındaki header satırı bulunamıyor.
-
-**Çözüm:**
-- Excel dosyasını açıp header satırını kontrol edin
-- Şu kolonlar **mutlaka** olmalı:
-  - `TRANSACTION DATE`
-  - `AMOUNT`
-  - `NARRATIVE`
-  - `TRANSACTION NAME`
-
-### ❌ "Kolonlar bulunamadı" Hatası
-
-**Sorun:** Gerekli kolonlar tespit edilemiyor.
-
-**Çözüm:**
-- Kolon isimleri yukarıdaki gibi olmalı
-- Farklı isimlerse `io_ipard2.py`'deki `_find_column_indices()` fonksiyonunu güncelleyin
-
-### ❌ API Hatası (429, 500, vb.)
-
-**Sorun:** LLM API'si hata veriyor.
-
-**Çözüm:**
-- `.env` dosyasında API anahtarlarını kontrol edin
-- API limitinizi kontrol edin (özellikle Groq için)
-- `llm_client.py` otomatik retry yapıyor, bekleyin
-
-### ❌ ChromaDB Hatası
-
-**Sorun:** Vektör veritabanı hatası.
-
-**Çözüm:**
-- `indexes/chroma_txns` klasörünü silin, tekrar oluşacak
-- Disk alanınızı kontrol edin
-
-### ⚠️ Tarih Parse Uyarısı
-
-```
-UserWarning: Parsing dates in %d.%m.%Y %H:%M format when dayfirst=False
-```
-
-**Sorun:** Pandas tarih formatı uyarısı.
-
-**Çözüm:**
-- Sadece uyarı, sorun değil
-- Türkçe tarih formatı (%d.%m.%Y) doğru çalışıyor
-
----
-
-## 🎓 Nasıl Çalışır?
-
-### 1️⃣ Excel Okuma
-- Başvuru sahiplerini okur (isim, TC/VKN, başvuru no)
-- Banka işlemlerini okur (2 sheet: EŞ-FİNANSMAN, TRANSFER)
-- Header ve kolonları **otomatik** bulur
-
-### 2️⃣ Normalizasyon
-- Türkçe karakterleri dönüştürür (ş→s, ğ→g, vb.)
-- Boşlukları temizler
-- Token'lara böler
-
-### 3️⃣ Eşleştirme (4 Aşama)
-
-**Phase 1: TC/VKN**
-```python
-TC: 12345678901 → narrative'de ara
-```
-
-**Phase 2: Başvuru No**
-```python
-Başvuru: 2023/18/1 → narrative'de ara
-```
-
-**Phase 3: Akıllı İsim**
-```python
-"Ahmet Yılmaz" → tokens: [AHMET, YILMAZ]
-Narrative: "AHMET YILMAZ tarafından..." → MATCH ✅
-```
-
-**Phase 4: LLM + RAG**
-```python
-1. Query oluştur: "Ahmet Yılmaz 2023/18/1 12345678901"
-2. RAG: En yakın 12 işlemi bul (vektör similarity)
-3. LLM: Karar ver (MATCH/REVIEW/NO_MATCH)
-```
-
-### 4️⃣ Excel Çıktı
-- Her model için ayrı dosya
-- 5 sheet (MATCHED, REVIEW, vb.)
-- Detaylı istatistikler
-
----
-
-## 📞 Destek
-
-Sorun yaşarsanız:
-
-1. Terminal log'larını kontrol edin
-2. Excel dosyalarının formatını kontrol edin
-3. `.env` ve `config.py` ayarlarını gözden geçirin
-4. `indexes` klasörünü silip tekrar deneyin
-
----
-
-## 📄 Lisans
-
-Bu proje dahili kullanım içindir.
-
----
-
-## 🔄 Versiyon
-
-**v1.0** - Ocak 2025
-- İlk stabil sürüm
-- Otomatik header/kolon bulma
-- 3 LLM modeli desteği
-- 4 aşamalı hibrit eşleştirme
+4-stage hybrid matching pipeline.
