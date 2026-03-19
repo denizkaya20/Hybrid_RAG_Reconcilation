@@ -41,7 +41,6 @@ from config import (
     DEEPSEEK_MODEL,
     GROQ_BASE_URL,
     GROQ_API_KEY,
-    QWEN_MODEL,
 )
 from io_applicants import read_applicants
 from io_ipard2 import read_statement
