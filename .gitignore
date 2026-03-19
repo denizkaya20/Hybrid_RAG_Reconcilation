@@ -22,6 +22,8 @@ outputs/
 indexes/
 *.xlsx
 *.xls
+!datasets/*.xls
+!datasets/*.xlsx
 
 # OS
 .DS_Store
