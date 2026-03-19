@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  reconciler:
+    build: .
+    image: ipard2-reconciler:latest
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./indexes:/app/indexes       # persist ChromaDB index across runs
+      - ./outputs:/app/outputs       # persist Excel reports
+    env_file:
+      - .env                         # DEEPSEEK_API_KEY, GROQ_API_KEY, etc.
+    restart: unless-stopped
