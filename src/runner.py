@@ -39,8 +39,6 @@ from config import (
     DEEPSEEK_BASE_URL,
     DEEPSEEK_API_KEY,
     DEEPSEEK_MODEL,
-    GROQ_BASE_URL,
-    GROQ_API_KEY,
 )
 from io_applicants import read_applicants
 from io_ipard2 import read_statement
