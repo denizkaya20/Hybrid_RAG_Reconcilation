@@ -22,6 +22,16 @@ from pathlib import Path
 import gradio as gr
 import pandas as pd
 
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+
+from src.app import build_ui
+
+ui = build_ui()
+ui.launch(server_name="0.0.0.0", server_port=7860)
+
+
+
 # Ensure src/ is importable when running from project root
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
