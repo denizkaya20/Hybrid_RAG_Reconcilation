@@ -27,7 +27,6 @@ import pandas as pd  # noqa: E402
 
 from config import (  # noqa: E402
     DEEPSEEK_BASE_URL,
-    DEEPSEEK_API_KEY,
     DEEPSEEK_MODEL,
     GROQ_BASE_URL,
     GROQ_API_KEY,
